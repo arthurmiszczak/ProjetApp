@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
+app.use(express.static('public'));
 
 app.get('/login', (req, res) => {
     res.send('Binvenue sur la page de login');
@@ -20,8 +22,6 @@ app.post('/register', (req, res) => {
 
 
 
-app.use(express.static('public'));
-app.use(express.json());
 
 
 app.get('/info',(req, res) => {
