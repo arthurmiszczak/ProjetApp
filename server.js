@@ -85,11 +85,6 @@ app.post('/votes', (req, res) => {
     if (results.length === 0) {
         // Créer un nouvel utilisateur
         connection.query('INSERT INTO Users (login, password) VALUES (?, ?)', [req.body.voteValue, ''], (err, insertResult) => {
-            if (err) {
-                console.error('Erreur lors de la création de l\'utilisateur :', err);
-                res.status(500).json({ message: 'Erreur serveur' });
-                return;
-            }
             const idVoted = insertResult.insertId;
             insertVote(req.body.userId, idVoted, res);
         });
@@ -133,7 +128,7 @@ res.json(results);
 
 app.get('/votes-list', (req, res) => {
 connection.query(
-'SELECT Voter.login as voter, Voted.login as voted_for FROM Votes JOIN Users as Voter ON Votes.iduser = Voter.id JOIN Users as Voted ON Votes.idvote = Voted.id ORDER BY Votes.id',
+'SELECT Voter.login as voter, Voted.login as voted_for FROM Votes JOIN Users as Voter ON Votes.iduser = Voter.login JOIN Users as Voted ON Votes.idvote = Voted. ORDER BY Votes.id',
 (err, results) => {
 if (err) {
 console.error('Erreur lors de la récupération des votes :', err);
@@ -145,6 +140,13 @@ res.json(results);
 );
 });
 
-
-
-
+app.get('/users', (req, res) => {
+    connection.query('SELECT * FROM Users', (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des utilisateurs :', err);
+            res.status(500).json({ message: 'Erreur serveur' });
+            return;
+        }
+        res.json(results);
+    });
+});

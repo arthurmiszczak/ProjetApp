@@ -110,7 +110,7 @@ boutonVoteUser.addEventListener('click', () => {
     .then(data => {
         messageVote.innerHTML = '<p style="color: green;">Vous avez voté pour ' + vote + '</p>';
         voteValue.value = '';
-        chargerComptesVotes(); // Mettre à jour les comptes après le vote
+        chargerComptesVotes(); 
     })
     .catch(err => {
         console.error('Erreur:', err);
@@ -118,14 +118,26 @@ boutonVoteUser.addEventListener('click', () => {
     });
 });
 
-// Charger les comptes de votes au démarrage de la page
 chargerComptesVotes();
 
-// Rafraîchir automatiquement toutes les 1 secondes
 setInterval(() => {
     chargerComptesVotes();
 }, 1000);
 
 
-
-    
+fetch('/users',{
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => {
+    voteValue.innerHTML = '<option value="">--Sélectionnez un utilisateur--</option>';
+    data.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.id;
+        option.textContent = user.login;
+        voteValue.appendChild(option);
+    });
+})
